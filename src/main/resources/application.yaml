@@ -1,0 +1,28 @@
+webdriver:
+  chrome:
+    driver: "D:\\Project final\\siakad-presence-automation\\chromedriver.exe"
+    timeout: 30
+
+user-config:
+  username: ${SIAKAD-USERNAME}
+  password: ${SIAKAD-PASSWORD}
+
+siakad-config:
+  home-url: https://siakad.ar-raniry.ac.id/e-mahasiswa/home
+  login-url: https://mahasiswa.siakad.ar-raniry.ac.id/login
+
+spring:
+  profiles:
+    active: dev
+
+logging:
+  level:
+    com.github.services: DEBUG
+
+cert:
+  rsa-public:
+  password:
+
+selenium:
+  args:
+  isVerbose: false
