@@ -37,7 +37,6 @@ public class SeleniumConfig {
     public ChromeDriverService chromeDriverService() {
         return new ChromeDriverService.Builder()
                 .usingAnyFreePort()
-                .withWhitelistedIps("")
                 .withVerbose(isVerbose)
                 .build();
     }

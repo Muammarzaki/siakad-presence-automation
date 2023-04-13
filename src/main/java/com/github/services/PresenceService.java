@@ -7,7 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +47,7 @@ public class PresenceService implements IPresenceService {
             log.info("Current url Now is {}", driver.getCurrentUrl());
 
             driver.navigate().to(homeUrl);
+
             log.info("Current url Now is {}", driver.getCurrentUrl());
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30l));
@@ -55,14 +55,6 @@ public class PresenceService implements IPresenceService {
 
             if (!driver.getTitle().equals("Dashboard Mahasiswa"))
                 throw new WebDriverException("driver not at 'Dashboard Mahasiswa'");
-
-            if (driver instanceof ChromeDriver chromeDriver) {
-                Object executeResult = chromeDriver.executeScript(
-                        "document.querySelectorAll(\"button[type=submit]\").forEach((item,index,arr) => {{item.click()}});");
-                if (executeResult instanceof Response response) {
-                    log.info("state {} and status {}", response.getState(), response.getStatus());
-                }
-            }
 
             WebElement submitButton = driver.findElement(By.cssSelector("button[type=submit]"));
             submitButton.click();

@@ -19,10 +19,8 @@ logging:
   level:
     com.github.services: DEBUG
 
-cert:
-  rsa-public:
-  password:
-
 selenium:
   args:
   isVerbose: false
+
+schedule-config: ${SCHEDULE_CONFIG:classpath:schedule-time-config.json}
