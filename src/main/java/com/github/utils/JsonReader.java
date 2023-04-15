@@ -9,13 +9,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * JsonReader
  */
-public interface JsonReader {
+public interface JsonReader extends JsonPath {
 
     public default JsonNode readJson() throws IOException {
-        Path jsonfile = getPathJsonFile();
+        Path jsonfile = getJsonPath();
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readTree(jsonfile.toFile());
     }
-
-    abstract Path getPathJsonFile();
 }

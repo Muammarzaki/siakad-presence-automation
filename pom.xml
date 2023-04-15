@@ -61,6 +61,12 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<exclude>
+						<resource>
+							<directory>src/main/resources</directory>
+							<include>application-dev.yaml</include>
+						</resource>
+					</exclude>
 				</configuration>
 			</plugin>
 		</plugins>

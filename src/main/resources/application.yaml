@@ -1,11 +1,10 @@
 webdriver:
   chrome:
-    driver: "D:\\Project final\\siakad-presence-automation\\chromedriver.exe"
-    timeout: 30
+    driver: "${WEBDRIVER:chromedriver.exe}"
 
 user-config:
-  username: ${SIAKAD-USERNAME}
-  password: ${SIAKAD-PASSWORD}
+  username: ${SIAKAD_USERNAME:}
+  password: ${SIAKAD_PASSWORD:}
 
 siakad-config:
   home-url: https://siakad.ar-raniry.ac.id/e-mahasiswa/home
@@ -15,12 +14,15 @@ spring:
   profiles:
     active: dev
 
-logging:
-  level:
-    com.github.services: DEBUG
-
 selenium:
-  args:
-  isVerbose: false
+  verbose: ${VERBOSE:false}
+  timeout: ${TIMEOUT:1}
+  headless: ${HEADLESS:false}
+  args: ${ARGS}
+
+# selenium:
+#   timeout: ${TIMEOUT:1}
+#   verbose: ${VERBOSE:false}
+#   headless: ${HEADLESS:true}
 
 schedule-config: ${SCHEDULE_CONFIG:classpath:schedule-time-config.json}

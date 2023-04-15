@@ -37,3 +37,4 @@ build/
 src/main/resources/application-dev.yaml
 src/main/resources/application-prod.yaml
 schedule-time-config.json
+*.env

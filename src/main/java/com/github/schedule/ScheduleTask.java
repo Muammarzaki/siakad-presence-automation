@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.services.PresenceService;
+import com.github.services.IPresenceService;
 import com.github.utils.JsonReader;
 import com.github.utils.TimeStapRange;
 
@@ -26,15 +26,17 @@ import lombok.extern.slf4j.Slf4j;
 @ConfigurationProperties
 public class ScheduleTask {
 
-    private PresenceService service;
+    private IPresenceService service;
 
     @Value("${schedule-config}")
     private Path scheduleConfig;
 
+    private JsonReader jsonReader = () -> scheduleConfig;
+
     /**
      * @param service
      */
-    public ScheduleTask(PresenceService service) {
+    public ScheduleTask(IPresenceService service) {
         this.service = service;
     }
 
@@ -51,8 +53,6 @@ public class ScheduleTask {
             }
         }
     }
-
-    private JsonReader jsonReader = () -> scheduleConfig;
 
     private boolean checkSchedule() throws IOException {
         JsonNode jadwalTime = jsonReader.readJson()
