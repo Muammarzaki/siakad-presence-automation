@@ -3,55 +3,38 @@ package com.github.domain;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.validators.annotations.DayofWeek;
+import com.github.validators.annotations.RightTimescheduleFormat;
+
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ScheduleConfigDomain {
 
-    private Map<String, List<String>> dayWithScheduleTime;
+    @JsonProperty("jadwal")
+    @NotNull
+    @Size(min = 6, max = 7)
+    private Map<@DayofWeek String, @Nullable List<@RightTimescheduleFormat String>> dayWithScheduleTime;
 
+    @JsonProperty("libur")
+    @Nullable
     private List<Integer> freeDayOfMount;
 
-    private Integer[] rangeScheduleOfDay = new Integer[2];
-
-    /**
-     * @return the dayWithScheduleTime
-     */
-    public Map<String, List<String>> getDayWithScheduleTime() {
-        return dayWithScheduleTime;
-    }
-
-    /**
-     * @param dayWithScheduleTime the dayWithScheduleTime to set
-     */
-    public void setDayWithScheduleTime(Map<String, List<String>> dayWithScheduleTime) {
-        this.dayWithScheduleTime = dayWithScheduleTime;
-    }
-
-    /**
-     * @return the freeDayOfMount
-     */
-    public List<Integer> getFreeDayOfMount() {
-        return freeDayOfMount;
-    }
-
-    /**
-     * @param freeDayOfMount the freeDayOfMount to set
-     */
-    public void setFreeDayOfMount(List<Integer> freeDayOfMount) {
-        this.freeDayOfMount = freeDayOfMount;
-    }
-
-    /**
-     * @return the rangeScheduleOfDay
-     */
-    public Integer[] getRangeScheduleOfDay() {
-        return rangeScheduleOfDay;
-    }
-
-    /**
-     * @param rangeScheduleOfDay the rangeScheduleOfDay to set
-     */
-    public void setRangeScheduleOfDay(Integer... rangeScheduleOfDay) {
-        this.rangeScheduleOfDay[0] = rangeScheduleOfDay[0];
-        this.rangeScheduleOfDay[1] = rangeScheduleOfDay[1];
-    }
+    @JsonProperty("batas")
+    @Size(min = 2, max = 2, message = "The array must have exactly two elements")
+    @NotNull
+    @NotEmpty
+    private int[] rangeScheduleOfDay;
 
 }

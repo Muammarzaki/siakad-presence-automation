@@ -8,10 +8,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 public interface JsonWriter extends JsonPath {
-    public default void writeJsonFile(String jsonNode) throws IOException {
+
+    public default boolean writeJsonFile(Object jsonNode) throws IOException {
         Path jsonFile = getJsonPath();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectWriter objectWriter = objectMapper.writer(new DefaultPrettyPrinter());
         objectWriter.writeValue(jsonFile.toFile(), jsonNode);
+        
+        return true;
     }
 }

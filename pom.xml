@@ -24,6 +24,7 @@
 			<artifactId>selenium-java</artifactId>
 			<version>4.8.3</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
@@ -47,6 +48,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -61,12 +66,6 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<exclude>
-						<resource>
-							<directory>src/main/resources</directory>
-							<include>application-dev.yaml</include>
-						</resource>
-					</exclude>
 				</configuration>
 			</plugin>
 		</plugins>
