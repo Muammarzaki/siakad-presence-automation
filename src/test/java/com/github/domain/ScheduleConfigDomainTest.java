@@ -19,6 +19,7 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,8 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-@Tag("validation scheduleConfigDomain Test")
+@Tag("unit-testing")
+@DisplayName("validation scheduleConfigDomain Test")
 public class ScheduleConfigDomainTest {
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     Validator validator = validatorFactory.getValidator();
@@ -43,12 +45,14 @@ public class ScheduleConfigDomainTest {
     private static ScheduleConfigDomain domain2;
 
     @Test
+    @DisplayName("should doesnot have any ObjectError couse data is valid")
     void TestRightDataToValidate() {
         Set<ConstraintViolation<ScheduleConfigDomain>> validate = validator.validate(ScheduleConfigDomainTest.domain1);
         assertThat(validate).isEmpty();
     }
 
     @Test
+    @DisplayName("should does have any ObjectError couse data is invalid and have 3 message")
     void TestWrongDataToValidate() {
         Set<ConstraintViolation<ScheduleConfigDomain>> validate = validator.validate(ScheduleConfigDomainTest.domain2);
         assertThat(validate).isNotNull().isNotEmpty().hasSize(3);
@@ -59,7 +63,7 @@ public class ScheduleConfigDomainTest {
     }
 
     @Nested
-    @Tag("Try to convert SchduleConfigDomain to json ")
+    @DisplayName("Try to convert SchduleConfigDomain to json ")
     public class ConvertDomainToJsonTest {
         ScheduleConfigJsonPath jsonPath = spy(new ScheduleConfigJsonPath());
 
@@ -70,6 +74,7 @@ public class ScheduleConfigDomainTest {
         String jsonExpencted;
 
         @Test
+        @DisplayName("try to convert domain to json and compare it, expected same")
         void converToJson() {
             assertDoesNotThrow(() -> {
                 JsonNode jsonReadResult;
@@ -95,6 +100,7 @@ public class ScheduleConfigDomainTest {
         }
 
         @Test
+        @DisplayName("try to convert json to domain and compare it, expected true and is valid")
         void convertFromJson() {
             assertDoesNotThrow(() -> {
                 jsonWriter.writeJsonFile(domain1);
