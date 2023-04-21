@@ -9,7 +9,7 @@ import jakarta.validation.ConstraintValidatorContext;
  * ScheduleTimeValidators
  */
 public class ScheduleTimeValidators implements ConstraintValidator<RightTimescheduleFormat, String> {
-    public static final String SCHEDULE_TIME_FORMAT = "(\\d{2}:\\d{2})-(\\d{2}:\\d{2})";
+    public static final String SCHEDULE_TIME_FORMAT = "^(\\d{2}:\\d{2})-(\\d{2}:\\d{2})$";
 
     @Override
     public boolean isValid(String arg0, ConstraintValidatorContext arg1) {

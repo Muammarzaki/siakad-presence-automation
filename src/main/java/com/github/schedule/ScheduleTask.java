@@ -30,14 +30,16 @@ public class ScheduleTask {
 
     private IPresenceService service;
 
-    @Qualifier("ScheduleConfigJsonPath")
+    @Qualifier("scheduleConfigJsonPath")
     private JsonReader jsonReader;
 
     /**
      * @param service
+     * @param jsonReader
      */
-    public ScheduleTask(IPresenceService service) {
+    public ScheduleTask(IPresenceService service, ScheduleConfigJsonPath jsonReader) {
         this.service = service;
+        this.jsonReader = jsonReader;
     }
 
     @Scheduled(fixedRate = 30, timeUnit = TimeUnit.MINUTES)
@@ -55,14 +57,18 @@ public class ScheduleTask {
     }
 
     private boolean checkSchedule() throws IOException {
-        LocalDate now = LocalDate.now();
+        final LocalDate now = LocalDate.now();
         if (isThisDayNotSunday(now)) {
             ScheduleConfigDomain scheduleConfigDomain = (ScheduleConfigDomain) jsonReader
                     .readJson(ScheduleConfigJsonPath.TYPE);
             @Nullable
             List<@RightTimescheduleFormat String> nowScheduleTime = scheduleConfigDomain.getDayWithScheduleTime()
                     .get(now.getDayOfWeek().toString().toLowerCase());
-            if (nowScheduleTime.isEmpty()) {
+
+            boolean isfreeday = scheduleConfigDomain.getFreeDayOfMonth().stream()
+                    .anyMatch(item -> this.checkItsFreeDayinThisMonth(item, now));
+
+            if (nowScheduleTime.isEmpty() || isfreeday) {
                 return false;
             }
             for (String timeConfig : nowScheduleTime) {
@@ -73,6 +79,12 @@ public class ScheduleTask {
             }
         }
         return false;
+    }
+
+    private boolean checkItsFreeDayinThisMonth(String freeDay, LocalDate time) {
+        String[] split = freeDay.split(":");
+        return split[0].equalsIgnoreCase(String.valueOf(time.getDayOfMonth()))
+                && split[2].equalsIgnoreCase(String.valueOf(time.getMonthValue()));
     }
 
     private boolean isThisDayNotSunday(LocalDate now) {

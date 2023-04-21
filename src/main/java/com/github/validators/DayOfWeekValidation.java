@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class DayOfWeekValidation implements ConstraintValidator<DayofWeek, String> {
 
-    public static final String DAY_OF_WEEK_PATTERN = "monday|tuesday|wednesday|thursday|friday|saturday|sunday";
+    public static final String DAY_OF_WEEK_PATTERN = "^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)$";
 
     @Override
     public boolean isValid(String arg0, ConstraintValidatorContext arg1) {

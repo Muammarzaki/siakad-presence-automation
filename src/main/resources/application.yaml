@@ -12,7 +12,7 @@ siakad-config:
 
 spring:
   profiles:
-    active: dev
+    active: ${PROFILE:dev}
 
 selenium:
   verbose: ${VERBOSE:false}
