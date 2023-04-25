@@ -160,7 +160,7 @@ public class ScheduleConfigDomainTest {
         jadwal2.put("friday", List.of("08:35-11:10"));
         jadwal2.put("saturday", List.of("09:30-11:30"));
 
-        domain1 = new ScheduleConfigDomain(jadwal1, Collections.emptyList(), new int[] { 1, 30 });
-        domain2 = new ScheduleConfigDomain(jadwal2, Collections.emptyList(), new int[1]);
+        domain1 = new ScheduleConfigDomain(jadwal1, Collections.emptyList(), List.of("2023-1-1", "2023-31-12"));
+        domain2 = new ScheduleConfigDomain(jadwal2, Collections.emptyList(), List.of("2023-1-1"));
     }
 }

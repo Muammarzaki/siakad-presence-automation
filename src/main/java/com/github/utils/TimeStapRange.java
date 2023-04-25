@@ -13,8 +13,7 @@ public record TimeStapRange(LocalTime start, LocalTime end) {
                 LocalTime.parse(end, DateTimeFormatter.ofPattern("HH:mm")));
     }
 
-    public boolean isNowMustClick() {
-        LocalTime now = LocalTime.now();
+    public boolean isNowMustClick(LocalTime now) {
         return now.isAfter(this.start) && now.isBefore(this.end);
     }
 }

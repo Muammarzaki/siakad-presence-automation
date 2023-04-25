@@ -1,6 +1,7 @@
 package com.github.schedule;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,26 +22,21 @@ import com.github.utils.TimeStapRange;
 import com.github.validators.annotations.RightTimescheduleFormat;
 
 import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @EnableScheduling
 @Slf4j
+@RequiredArgsConstructor
 public class ScheduleTask {
 
-    private IPresenceService service;
+    private final IPresenceService service;
+
+    private final Clock clock;
 
     @Qualifier("scheduleConfigJsonPath")
-    private JsonReader jsonReader;
-
-    /**
-     * @param service
-     * @param jsonReader
-     */
-    public ScheduleTask(IPresenceService service, ScheduleConfigJsonPath jsonReader) {
-        this.service = service;
-        this.jsonReader = jsonReader;
-    }
+    private final JsonReader jsonReader;
 
     @Scheduled(fixedRate = 30, timeUnit = TimeUnit.MINUTES)
     public void checkTime() throws IOException {
@@ -57,24 +53,26 @@ public class ScheduleTask {
     }
 
     private boolean checkSchedule() throws IOException {
-        final LocalDate now = LocalDate.now();
-        if (isThisDayNotSunday(now)) {
+        final LocalDateTime now = LocalDateTime.now(this.clock);
+        if (isThisDayNotSunday(now.toLocalDate())) {
             ScheduleConfigDomain scheduleConfigDomain = (ScheduleConfigDomain) jsonReader
                     .readJson(ScheduleConfigJsonPath.TYPE);
-            @Nullable
-            List<@RightTimescheduleFormat String> nowScheduleTime = scheduleConfigDomain.getDayWithScheduleTime()
-                    .get(now.getDayOfWeek().toString().toLowerCase());
+            if (checkItsInRangeOfSchedule(scheduleConfigDomain.getRangeScheduleOfDay(), now.toLocalDate())) {
+                @Nullable
+                List<@RightTimescheduleFormat String> nowScheduleTime = scheduleConfigDomain.getDayWithScheduleTime()
+                        .get(now.getDayOfWeek().toString().toLowerCase());
 
-            boolean isfreeday = scheduleConfigDomain.getFreeDayOfMonth().stream()
-                    .anyMatch(item -> this.checkItsFreeDayinThisMonth(item, now));
+                boolean isfreeday = scheduleConfigDomain.getFreeDayOfMonth().stream()
+                        .anyMatch(item -> this.checkItsFreeDayinThisMonth(item, now.toLocalDate()));
 
-            if (nowScheduleTime.isEmpty() || isfreeday) {
-                return false;
-            }
-            for (String timeConfig : nowScheduleTime) {
-                String[] timeRange = timeConfig.split("-");
-                if (new TimeStapRange(timeRange[0], timeRange[1]).isNowMustClick()) {
-                    return true;
+                if (nowScheduleTime.isEmpty() || isfreeday) {
+                    return false;
+                }
+                for (String timeConfig : nowScheduleTime) {
+                    String[] timeRange = timeConfig.split("-");
+                    if (new TimeStapRange(timeRange[0], timeRange[1]).isNowMustClick(now.toLocalTime())) {
+                        return true;
+                    }
                 }
             }
         }
@@ -85,6 +83,12 @@ public class ScheduleTask {
         String[] split = freeDay.split(":");
         return split[0].equalsIgnoreCase(String.valueOf(time.getDayOfMonth()))
                 && split[2].equalsIgnoreCase(String.valueOf(time.getMonthValue()));
+    }
+
+    private boolean checkItsInRangeOfSchedule(List<String> range, LocalDate time) {
+        LocalDate start = LocalDate.parse(range.get(0));
+        LocalDate end = LocalDate.parse(range.get(1));
+        return time.isAfter(start) && time.isBefore(end);
     }
 
     private boolean isThisDayNotSunday(LocalDate now) {

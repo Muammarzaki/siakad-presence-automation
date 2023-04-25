@@ -9,11 +9,16 @@ import java.lang.annotation.Target;
 import com.github.validators.FreeDayOfMonthValidation;
 
 import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = FreeDayOfMonthValidation.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE_USE, ElementType.FIELD })
-public @interface FreeDayOfMonth {
+public @interface DateFormatter {
+    public String message() default "DayofMonth is invalid try to follow year-date-month exp: 2023-31-12";
 
+    public Class<?>[] groups() default {};
+
+    public Class<? extends Payload>[] payload() default {};
 }

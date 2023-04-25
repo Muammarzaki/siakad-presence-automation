@@ -20,8 +20,9 @@ public class SiakadPresenceAutomationApplication {
 
 	@Bean
 	@Profile("dev")
-	CommandLineRunner starup(WebDriver webDriver) {
+	CommandLineRunner startUp(WebDriver webDriver) {
 		URL resource = this.getClass().getClassLoader().getResource("template/debug.html");
 		return args -> webDriver.get(resource.toString());
 	}
+
 }

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.validators.annotations.DateFormatter;
 import com.github.validators.annotations.DayofWeek;
-import com.github.validators.annotations.FreeDayOfMonth;
 import com.github.validators.annotations.RightTimescheduleFormat;
 
 import jakarta.annotation.Nullable;
@@ -30,12 +30,12 @@ public class ScheduleConfigDomain {
 
     @JsonProperty("free-day")
     @Nullable
-    private List<@FreeDayOfMonth String> freeDayOfMonth;
+    private List<@DateFormatter String> freeDayOfMonth;
 
     @JsonProperty("range")
     @Size(min = 2, max = 2, message = "The array must have exactly two elements")
     @NotNull
     @NotEmpty
-    private int[] rangeScheduleOfDay;
+    private List<@DateFormatter String> rangeScheduleOfDay;
 
 }

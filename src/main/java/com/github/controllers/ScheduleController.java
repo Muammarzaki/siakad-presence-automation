@@ -3,9 +3,9 @@ package com.github.controllers;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,18 +14,27 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.domain.ResponseDomain;
 import com.github.domain.ScheduleConfigDomain;
 import com.github.helpers.ScheduleConfigJsonPath;
+import com.github.utils.JsonReader;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("schedule-config")
+@RequiredArgsConstructor
 public class ScheduleController {
 
-  @Qualifier("ScheduleConfigJsonPath")
-  private ScheduleConfigJsonPath jsonSchedule;
+  private final ScheduleConfigJsonPath jsonSchedule;
+
+  @GetMapping("config")
+  public ResponseEntity<Object> getConfig() throws IOException {
+    final JsonReader jsonReader = jsonSchedule;
+    return ResponseEntity.ok().body(jsonReader.readJson(ScheduleConfigJsonPath.TYPE));
+  }
 
   @PostMapping("change")
-  public ResponseEntity<Object> changeConfiguration(@Valid @RequestBody ScheduleConfigDomain body) throws IOException {
+  public ResponseEntity<Object> changeConfiguration(@Valid @RequestBody final ScheduleConfigDomain body)
+      throws IOException {
     jsonSchedule.writeJsonFile(body);
     return ResponseEntity.accepted().body(new ResponseDomain.Builder()
         .setStatus(HttpStatus.ACCEPTED)
@@ -33,16 +42,20 @@ public class ScheduleController {
         .build(body));
   }
 
-  @PostMapping("add-free-day")
-  public ResponseEntity<Object> addLiburTime(@RequestBody List<Integer> freeDay) throws IOException {
-    Class<ScheduleConfigDomain> type = ScheduleConfigJsonPath.TYPE;
-    boolean proses = java.util.Optional.ofNullable(jsonSchedule.readJson(type))
+  @PostMapping("add-freeday")
+  public ResponseEntity<Object> addLiburTime(@RequestBody final List<String> freeDay) throws IOException {
+    final Class<ScheduleConfigDomain> type = ScheduleConfigJsonPath.TYPE;
+    final boolean proses = java.util.Optional.ofNullable(jsonSchedule.readJson(type))
         .map(type::cast)
         .filter(type::isInstance)
+        .map(item -> {
+          item.setFreeDayOfMonth(freeDay);
+          return item;
+        })
         .map(t -> {
           try {
             return jsonSchedule.writeJsonFile(t);
-          } catch (IOException e) {
+          } catch (final IOException e) {
             return false;
           }
         })
