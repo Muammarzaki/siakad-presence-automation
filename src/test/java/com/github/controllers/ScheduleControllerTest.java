@@ -25,7 +25,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import com.github.domain.ResponseDomain;
 import com.github.domain.ScheduleConfigDomain;
 import com.github.helpers.ScheduleConfigJsonPath;
 
@@ -37,12 +40,17 @@ import jakarta.validation.Validator;
 public class ScheduleControllerTest {
 
     private ScheduleConfigJsonPath mockJsonSchedule;
+
     private ScheduleController scheduleController;
+
     private Validator validator;
+
     Map<String, java.util.List<String>> jadwal1 = new HashMap<>();
+
     private ScheduleConfigDomain domain1;
+
     Path fileName = Path.of("schedule-config.json");
-    ArgumentCaptor<ScheduleConfigDomain> captor;
+
     String valueFile = """
             {
                 "timetable": {
@@ -78,7 +86,6 @@ public class ScheduleControllerTest {
 
     @BeforeEach
     public void setUp() {
-        captor = ArgumentCaptor.forClass(ScheduleConfigDomain.class);
 
         jadwal1.put("monday", List.of("10:20-12:55", "07:45-09:25"));
         jadwal1.put("tuesday", List.of("08:35-10:20"));
@@ -90,8 +97,11 @@ public class ScheduleControllerTest {
         domain1 = new ScheduleConfigDomain(jadwal1, Collections.emptyList(), List.of("2023-1-1", "2023-31-12"));
 
         mockJsonSchedule = mock(ScheduleConfigJsonPath.class);
+
         scheduleController = new ScheduleController(mockJsonSchedule);
+
         validator = Validation.buildDefaultValidatorFactory().getValidator();
+
         try {
             Files.createFile(fileName);
             BufferedWriter writer = Files.newBufferedWriter(fileName, StandardOpenOption.WRITE);
@@ -100,6 +110,7 @@ public class ScheduleControllerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         when(mockJsonSchedule.getJsonPath()).thenReturn(fileName);
 
     }
@@ -115,7 +126,10 @@ public class ScheduleControllerTest {
 
     @Test
     void testAddLiburTime() {
+        ArgumentCaptor<ScheduleConfigDomain> captor;
+        captor = ArgumentCaptor.forClass(ScheduleConfigDomain.class);
         assertDoesNotThrow(() -> {
+
             when(mockJsonSchedule.readJson(ScheduleConfigDomain.class)).thenReturn(domain1);
             when(mockJsonSchedule.writeJsonFile(domain1)).thenReturn(true);
 
@@ -139,11 +153,53 @@ public class ScheduleControllerTest {
 
     @Test
     void testChangeConfiguration() {
+        ArgumentCaptor<ScheduleConfigDomain> captor;
+        captor = ArgumentCaptor.forClass(ScheduleConfigDomain.class);
+        assertDoesNotThrow(() -> {
 
+            when(mockJsonSchedule.readJson(ScheduleConfigDomain.class)).thenReturn(domain1);
+            when(mockJsonSchedule.writeJsonFile(any())).thenReturn(true);
+
+            ResponseEntity<Object> response = scheduleController.changeConfiguration(domain1);
+
+            verify(mockJsonSchedule, times(0)).readJson(any());
+            verify(mockJsonSchedule, times(1)).writeJsonFile(captor.capture());
+
+            assertThat(captor.getValue())
+                    .isNotNull()
+                    .isEqualTo(domain1);
+
+            assertThat(response)
+                    .isNotNull();
+
+            assertThat(response.getStatusCode())
+                    .isEqualTo(HttpStatus.ACCEPTED);
+
+            assertThat(response.getBody())
+                    .isNotNull()
+                    .isInstanceOf(ResponseDomain.class);
+
+        });
     }
 
     @Test
     void testGetConfig() {
+        assertDoesNotThrow(() -> {
+            when(mockJsonSchedule.readJson(ScheduleConfigDomain.class)).thenReturn(domain1);
+            when(mockJsonSchedule.writeJsonFile(domain1)).thenReturn(true);
+
+            ResponseEntity<Object> config = scheduleController.getConfig();
+
+            verify(mockJsonSchedule, times(0)).writeJsonFile(any());
+            verify(mockJsonSchedule, times(1)).readJson(any());
+
+            assertThat(config.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            assertThat(config.getBody())
+                    .isNotNull()
+                    .isInstanceOf(domain1.getClass());
+
+        });
 
     }
 
