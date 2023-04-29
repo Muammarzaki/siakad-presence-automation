@@ -25,7 +25,10 @@ public class SeleniumConfig {
         }
         chromeOptions.setHeadless(properties.isHeadless());
         chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
-        chromeOptions.addArguments("--remote-allow-origins=*","--disable-ipc-flooding-protection");
+        chromeOptions.addArguments(
+                "--remote-allow-origins=*",
+                "--disable-ipc-flooding-protection",
+                "--disable-gpu");
         chromeOptions.setPageLoadTimeout(Duration.ofMinutes(properties.getTimeout()));
         return new ChromeDriver(chromeDriverService, chromeOptions);
     }

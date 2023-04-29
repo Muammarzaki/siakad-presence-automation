@@ -205,7 +205,6 @@ public class ScheduleControllerTest {
 
     @Nested
     @Tag("integrated-testing")
-
     class ScheduleControllerIntegratedTest {
 
     }
