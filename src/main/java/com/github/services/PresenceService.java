@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,31 +71,29 @@ public class PresenceService implements IPresenceService {
     private void login() throws WebDriverException {
         log.info("System trying login to Siakad");
         driver.get(loginUrl);
-        if (driver instanceof ChromeDriver chromeDriver) {
 
-            WebElement userNameInput = chromeDriver.findElement(By.cssSelector("input[name='username']"));
-            WebElement passwordInput = chromeDriver.findElement(By.cssSelector("input[name='password']"));
-            WebElement submitButton = chromeDriver.findElement(By.cssSelector("button[type='submit']"));
+        WebElement userNameInput = driver.findElement(By.cssSelector("input[name='username']"));
+        WebElement passwordInput = driver.findElement(By.cssSelector("input[name='password']"));
+        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
 
-            userNameInput.sendKeys(userName);
-            passwordInput.sendKeys(userPassword);
+        userNameInput.sendKeys(userName);
+        passwordInput.sendKeys(userPassword);
 
-            if (userNameInput.getAttribute("value").equals("")) {
-                throw new WebDriverException("Can't insert username field");
-            }
-            if (passwordInput.getAttribute("value").equals("")) {
-                throw new WebDriverException("Can't insert password field");
-            }
-
-            submitButton.click();
-
-            new WebDriverWait(driver, Duration.ofSeconds(30l))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".preloader")));
-
-            log.debug(chromeDriver.getCurrentUrl());
-
-            log.info("Login success at Siakad");
+        if (userNameInput.getAttribute("value").equals("")) {
+            throw new WebDriverException("Can't insert username field");
         }
+        if (passwordInput.getAttribute("value").equals("")) {
+            throw new WebDriverException("Can't insert password field");
+        }
+
+        submitButton.click();
+
+        new WebDriverWait(driver, Duration.ofSeconds(30l))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".preloader")));
+
+        log.debug(driver.getCurrentUrl());
+
+        log.info("Login success at Siakad");
     }
 
 }
