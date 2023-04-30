@@ -12,20 +12,23 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class PresenceService implements IPresenceService {
 
-    private WebDriver driver;
+    private final WebDriver driver;
 
-    /**
-     * @param driver
-     * @param cookies
-     */
-    public PresenceService(WebDriver driver) {
-        this.driver = driver;
+    @PreDestroy
+    public void closeWebDriver() {
+        if (driver != null) {
+            driver.quit();
+            log.info("chrome driver down");
+        }
     }
 
     @Value("${user-config.username}")

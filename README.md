@@ -1,6 +1,6 @@
 # SIAKAD-PRESENCE-AUTOMATION
 
-project ini adalah tool untuk melakukan absen secara otomatis tetapi tidak akurat pada (bisa saja telat tetapi pasti terabsen)
+project ini adalah tool untuk melakukan absen secara otomatis tetapi tidak akurat (bisa saja telat tetapi pasti terabsen)
 
 ## Feature
 
