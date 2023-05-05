@@ -9,7 +9,6 @@ import com.github.validators.annotations.DateFormatter;
 import com.github.validators.annotations.DayofWeek;
 import com.github.validators.annotations.RightTimescheduleFormat;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,10 +25,9 @@ public class ScheduleConfigDomain {
     @JsonProperty("timetable")
     @NotNull
     @Size(min = 6, max = 7)
-    private Map<@DayofWeek String, @Nullable List<@RightTimescheduleFormat String>> dayWithScheduleTime;
+    private Map<@DayofWeek String, List<@RightTimescheduleFormat String>> dayWithScheduleTime;
 
     @JsonProperty("free-day")
-    @Nullable
     private List<@DateFormatter String> freeDayOfMonth;
 
     @JsonProperty("range")

@@ -14,11 +14,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>siakad-presence-automation</name>
 	<description>Demo project for Spring Boot</description>
+
 	<properties>
+		<lombok.version>1.18.20</lombok.version>
 		<java.version>17</java.version>
 	</properties>
-	<dependencies>
 
+	<dependencies>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
@@ -39,7 +41,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
 		</dependency>
 
 		<dependency>
